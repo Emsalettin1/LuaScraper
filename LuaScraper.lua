@@ -1,11 +1,11 @@
---import libraries
+--Import required libraries
 local https = require("ssl.https")
 local http = require("socket.http")
 local ltn12 = require("ltn12")
 
---Parsing URL
+-- Parse the protocol from a URL string (returns "http" or "https")
 local function parseURL(url)
-    --Looking for protocol
+    --check the protocol
     local start_pos, end_pos = string.find(url, "://")
     if start_pos then
         local result = string.sub(url, 1, start_pos - 1)
@@ -17,14 +17,14 @@ local function parseURL(url)
     end
 end
 
---HTTP GET function
+-- Perform an GET request and return the response
 local function httpGet(url, protocol)
     local response = {}
     local body = {}
     local code, responseHeaders
 
     if protocol == "https" then
-        --make HTTPS request
+        --Make a HTTPS request
         _, code, responseHeaders = https.request{
             url = url,
             method = "GET",
@@ -32,7 +32,7 @@ local function httpGet(url, protocol)
         }
 
     elseif protocol == "http" then
-        --make HTTP request
+        --Make a HTTP request
         _, code, responseHeaders = http.request{
             url = url,
             method = "GET",
@@ -45,12 +45,12 @@ local function httpGet(url, protocol)
     end
 
     if code ~= 200 then
-        error("HTTP request failed with status code: " .. code)
+        print("HTTP request failed with status code: " .. tostring(code))
         return nil
     end
 
 
-    --combine response parts
+    --Combine response parts
     response.body = table.concat(body)
     response.headers = responseHeaders
     response.code = code
@@ -58,40 +58,61 @@ local function httpGet(url, protocol)
     return response
 end
 
-local function writeToHTML(contents)
-    --open the contents file (create it if it isnt there)
-    local file, err = io.open("index.html", "w")
+--Write contents to a file, creating it if it doesn't exist
+local function writeToFile(filename, contents)
+    --Open the contents file (create it if it isnt exists)
+    local file, err = io.open(filename, "w")
     if not file then
-        print("Cannot open file: " .. err)
+        print("Cannot open the file: " .. err)
         return false
     end
 
+    --Write contents to file
     local success, writeErr = file:write(contents)
+
     if not success then
-        print("Error writing to the file: " .. tostring(writeErr))
+        print("Error writing to file: " .. tostring(writeErr))
         file:close()
         return false
     end
 
+    --Close the file
     file:close()
-    print("Contents wrote successfully.")
+
+    print("Contents written successfully.")
     return true
 end
 
+--Main function
 local function main()
-    local url = "https://google.com"
-    local response = httpGet(url, parseURL(url))
+    --Check the arguments
+    if not arg[1] or not arg[2] then
+        print("Usage: lua LuaScraper.lua <output_file> <url>")
+        return
+    end
+
+    local url = arg[2]
+    local protocol = parseURL(url)
+    if not protocol then
+        print("Invalid URL protocol.")
+        return
+    end
+    local response = httpGet(url, protocol)
 
     if not response then
         print("HTTP request failed.")
         return
     end
 
-    --print HTTP response status
+    --Print HTTP response status
     print("Response status: " .. response.code)
 
-    --add contents to HTML file
-    writeToHTML(response.body)
+    --Write response to file
+    local filename = arg[1]
+    if not writeToFile(filename, response.body) then
+        print("Failed to write response to file.")
+    end
+
 end
 
 main()
