@@ -18,7 +18,7 @@ local function parseURL(url)
 end
 
 -- Perform an GET request and return the response
-local function httpGet(url, protocol)
+local function getHTML(url, protocol)
     local response = {}
     local body = {}
     local code, responseHeaders
@@ -97,7 +97,7 @@ local function main()
         print("Invalid URL protocol.")
         return
     end
-    local response = httpGet(url, protocol)
+    local response = getHTML(url, protocol)
 
     if not response then
         print("HTTP request failed.")
