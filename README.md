@@ -1,11 +1,13 @@
 # LuaScraper
 
-LuaScraper is a simple command-line tool written in Lua for downloading the contents of a web page (HTTP or HTTPS) and saving it to a file.
+**LuaScraper** is a lightweight command-line tool built with Lua for downloading the contents of a web page (HTTP or HTTPS) and saving it to a file.
+
 
 ## Features
 
 - Supports both HTTP and HTTPS URLs
-- Saves the response body to a specified output file
+- Saves the response body to a specified output file and filepath
+- Command-line usage, no browser needed
 - Provides error messages for invalid input or network issues
 
 ## Used Libraries
@@ -16,22 +18,31 @@ LuaScraper is a simple command-line tool written in Lua for downloading the cont
 
 ## Installation
 
-Download the pre-built executable for your platform.  
-(Optional) Add it to your PATH to run it from anywhere.
+1.  **Download the LuaScraper.lua** the [Releases](https://github.com/YOUR_USERNAME/LuaScraper/releases) page.
+2.  **Download the LuaSocket and LuaSec:**
+
+```sh
+luarocks install luasocket
+```
+
+```sh
+luarocks install luasec
+```
+
 
 ## Usage
 
 ```sh
-LuaScraper <output_file> <url>
+lua LuaScraper.lua <output_file> <url>
 ```
 
-- `<output_file>`: The file where the downloaded content will be saved.
+- `<output_file>`: The file where the downloaded content will be saved. (you can add a specific filepath)
 - `<url>`: The URL to fetch (must start with `http://` or `https://`).
 
 **Example:**
 
 ```sh
-LuaScraper example.html https://example.com
+lua LuaScraper.lua example.html https://example.com
 ```
 
 ## Error Handling
@@ -43,3 +54,5 @@ LuaScraper example.html https://example.com
 ## License
 
 MIT License
+
+© 2025 Emsalettin1. Contributions welcome.

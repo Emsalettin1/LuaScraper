@@ -58,10 +58,10 @@ local function getHTML(url, protocol)
     return response
 end
 
---Write contents to a file, creating it if it doesn't exist
-local function writeToFile(filename, contents)
+-- Write contents to a file, creating it if it doesn't exist
+local function writeToFile(fullpath, contents)
     --Open the contents file (create it if it isnt exists)
-    local file, err = io.open(filename, "w")
+    local file, err = io.open(fullpath, "w")
     if not file then
         print("Cannot open the file: " .. err)
         return false
@@ -87,7 +87,7 @@ end
 local function main()
     --Check the arguments
     if not arg[1] or not arg[2] then
-        print("Usage: lua LuaScraper.lua <output_file> <url>")
+        print("Usage: lua LuaScraper.lua <output_file> <url> <file_location (optional)>")
         return
     end
 
@@ -109,7 +109,9 @@ local function main()
 
     --Write response to file
     local filename = arg[1]
-    if not writeToFile(filename, response.body) then
+    local filepath = arg[3]
+    local fullpath = filepath and (filepath:sub(-1) == "/" and filepath or filepath .. "/") .. filename or filename
+    if not writeToFile(fullpath, response.body) then
         print("Failed to write response to file.")
     end
 
