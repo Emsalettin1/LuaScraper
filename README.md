@@ -18,7 +18,7 @@
 
 ## Installation
 
-1.  **Download the LuaScraper.lua** the [Releases](https://github.com/YOUR_USERNAME/LuaScraper/releases) page.
+1.  **Download the LuaScraper.lua from source code**
 2.  **Download the LuaSocket and LuaSec:**
 
 ```sh
