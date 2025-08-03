@@ -1,11 +1,15 @@
---Import required libraries
+-- LuaScraper.lua
+-- Copyright (c) 2025 Emsalettin1
+-- Licensed under the MIT License. See LICENSE file for details.
+
+-- Import required libraries
 local https = require("ssl.https")
 local http = require("socket.http")
 local ltn12 = require("ltn12")
 
 -- Parse the protocol from a URL string (returns "http" or "https")
 local function parseURL(url)
-    --check the protocol
+    -- Check the protocol
     local start_pos, end_pos = string.find(url, "://")
     if start_pos then
         local result = string.sub(url, 1, start_pos - 1)
@@ -24,7 +28,7 @@ local function getHTML(url, protocol)
     local code, responseHeaders
 
     if protocol == "https" then
-        --Make a HTTPS request
+        -- Make a HTTPS request
         _, code, responseHeaders = https.request{
             url = url,
             method = "GET",
@@ -32,7 +36,7 @@ local function getHTML(url, protocol)
         }
 
     elseif protocol == "http" then
-        --Make a HTTP request
+        -- Make a HTTP request
         _, code, responseHeaders = http.request{
             url = url,
             method = "GET",
@@ -50,7 +54,7 @@ local function getHTML(url, protocol)
     end
 
 
-    --Combine response parts
+    -- Combine response parts
     response.body = table.concat(body)
     response.headers = responseHeaders
     response.code = code
@@ -60,14 +64,14 @@ end
 
 -- Write contents to a file, creating it if it doesn't exist
 local function writeToFile(fullpath, contents)
-    --Open the contents file (create it if it isnt exists)
+    -- Open the contents file (create it if it isnt exists)
     local file, err = io.open(fullpath, "w")
     if not file then
         print("Cannot open the file: " .. err)
         return false
     end
 
-    --Write contents to file
+    -- Write contents to file
     local success, writeErr = file:write(contents)
 
     if not success then
@@ -76,16 +80,16 @@ local function writeToFile(fullpath, contents)
         return false
     end
 
-    --Close the file
+    -- Close the file
     file:close()
 
     print("Contents written successfully.")
     return true
 end
 
---Main function
+-- Main function
 local function main()
-    --Check the arguments
+    -- Check the arguments
     if not arg[1] or not arg[2] then
         print("Usage: lua LuaScraper.lua <output_file> <url> <file_location (optional)>")
         return
@@ -104,10 +108,10 @@ local function main()
         return
     end
 
-    --Print HTTP response status
+    -- rint HTTP response status
     print("Response status: " .. response.code)
 
-    --Write response to file
+    -- Write response to file
     local filename = arg[1]
     local filepath = arg[3]
     local fullpath = filepath and (filepath:sub(-1) == "/" and filepath or filepath .. "/") .. filename or filename
